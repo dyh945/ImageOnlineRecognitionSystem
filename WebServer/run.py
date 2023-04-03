@@ -6,6 +6,9 @@ import mysql.connector
 import os
 from PIL import Image
 
+# test
+
+
 # Initialize Flask app
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads' # 上传文件保存的路径
