@@ -49,10 +49,10 @@
     <h1>日志管理</h1>
     <table>
       <tr>
-        <th>ID</th>
+        <!-- <th>ID</th> -->
         <th>图片文件名</th>
         <th>识别结果</th>
-        <th>上传时间</th>
+        <!-- <th>上传时间</th> -->
         <th>操作</th>
       </tr>
       <!-- 这里用 JavaScript 动态生成表格行 -->
@@ -61,28 +61,30 @@
       fetch('/api/logs')
         .then(response => response.json())
         .then(data => {
+          console.log('返回的数据：', data);
+
           const table = document.querySelector('table');
           data.forEach(record => {
             const row = table.insertRow(-1);
-            const idCell = row.insertCell(0);
-            const filenameCell = row.insertCell(1);
-            const resultCell = row.insertCell(2);
-            const timestampCell = row.insertCell(3);
-            const deleteCell = row.insertCell(4);
-            idCell.textContent = record.id;
-            filenameCell.textContent = record.filename;
-            resultCell.textContent = record.result;
-            timestampCell.textContent = record.timestamp;
+            const filenameCell = row.insertCell(0);
+            const resultCell = row.insertCell(1);
+            // const timestampCell = row.insertCell(2);
+            const deleteCell = row.insertCell(2);
+            filenameCell.textContent = record.filename;  
+            resultCell.textContent = record.results;
+            // timestampCell.textContent = record.timestamp;
             const deleteButton = document.createElement('button');
             deleteButton.className = 'delete-button';
             deleteButton.textContent = '删除';
             deleteButton.addEventListener('click', () => {
-              fetch(`/api/logs/${record.id}`, { method: 'DELETE' })
-                .then(response => response.json())
-                .then(data => {
-                  table.deleteRow(row.rowIndex);
-                })
-                .catch(error => console.error(error));
+              if (confirm('确定要删除此日志吗？')) {
+                fetch(`/api/logs/${record.filename}`, { method: 'DELETE' })
+                  .then(response => response.json())
+                  .then(data => {
+                    table.deleteRow(row.rowIndex);
+                  })
+                  .catch(error => console.error(error));
+              }
             });
             deleteCell.appendChild(deleteButton);
           });

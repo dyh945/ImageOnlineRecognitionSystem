@@ -13,13 +13,13 @@ model = torch.hub.load('ultralytics/yolov5', 'yolov5m', pretrained=True)
 # 加载模型类别名称列表
 class_names = model.module.names if hasattr(model, 'module') else model.names
 
-def byte2image(byte_data):
-    '''
-    byte转为图片
-    byte_data: 二进制
-    '''
-    image = Image.open(io.BytesIO(byte_data))
-    return image
+# def byte2image(byte_data):
+#     '''
+#     byte转为图片
+#     byte_data: 二进制
+#     '''
+#     image = Image.open(io.BytesIO(byte_data))
+#     return image
 
 @app.route('/analyze_file', methods=['POST'])
 def analyze_file():
@@ -40,9 +40,9 @@ def analyze_file():
 
     # 获取上传的文件
     img = request.files.get("image")
-    img.save("./uploads/target.jpg")
+    img.save("PredictionServer/uploads/target.jpg")
     # 加载图片
-    img = cv2.imread("./uploads/target.jpg")
+    img = cv2.imread("PredictionServer/uploads/target.jpg")
     # 将图片转为 RGB 格式
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
@@ -58,7 +58,7 @@ def analyze_file():
         objects.append((object_name, score))
 
     # 删除本地保存的文件
-    os.remove(os.path.join('uploads', 'target.jpg'))
+    os.remove(os.path.join('PredictionServer/uploads', 'target.jpg'))
 
     # 返回识别结果
     return {'objects': objects}
@@ -66,3 +66,7 @@ def analyze_file():
 
 if __name__ == "__main__":
     app.run(port=5002, debug=True)
+    # img = cv2.imread("PredictionServer/uploads/target.jpg")
+    # # 将图片转为 RGB 格式
+    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # print(img)
