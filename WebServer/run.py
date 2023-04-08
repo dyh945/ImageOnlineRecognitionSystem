@@ -117,7 +117,8 @@ def logs():
 
     # 将 Redis 和 MySQL 中的日志合并
     logs += mysql_logs
-    print(logs)
+    # logs = {"data": logs}
+    # print(logs)
 
     # # 根据时间戳降序排列
     # logs = sorted(logs, key=lambda log: str2datetime(log.get('timestamp', '')), reverse=True)
@@ -129,7 +130,9 @@ def logs():
 def delete_log(filename):
     # 删除 MySQL 中的日志
     cursor = mysql_connection.cursor()
-    cursor.execute('DELETE FROM logs WHERE filename = %s', (filename))
+    # print(filename)
+    # print(type(filename))
+    cursor.execute('DELETE FROM logs WHERE filename = "' + filename + '"')
     mysql_connection.commit()
     cursor.close()
 

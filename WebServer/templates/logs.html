@@ -1,95 +1,41 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>日志管理</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f2f2f2;
-      }
-      h1 {
-        text-align: center;
-        margin-top: 50px;
-        margin-bottom: 30px;
-      }
-      table {
-        margin: 0 auto;
-        border-collapse: collapse;
-        width: 80%;
-      }
-      th, td {
-        padding: 10px;
-        text-align: center;
-        border: 1px solid #ddd;
-      }
-      th {
-        background-color: #007bff;
-        color: #fff;
-        font-weight: bold;
-      }
-      tr:nth-child(even) {
-        background-color: #f2f2f2;
-      }
-      .delete-button {
-        background-color: #dc3545;
-        color: #fff;
-        border: none;
-        padding: 5px 10px;
-        border-radius: 5px;
-        cursor: pointer;
-      }
-      .delete-button:hover {
-        background-color: #c82333;
-      }
-    </style>
-  </head>
-  <body>
-    <h1>日志管理</h1>
-    <table>
+<table>
+    <thead>
       <tr>
-        <!-- <th>ID</th> -->
-        <th>图片文件名</th>
-        <th>识别结果</th>
+        <th>文件名</th>
         <!-- <th>上传时间</th> -->
+        <th>识别结果</th>
         <th>操作</th>
       </tr>
-      <!-- 这里用 JavaScript 动态生成表格行 -->
-    </table>
-    <script>
-      fetch('/api/logs')
-        .then(response => response.json())
-        .then(data => {
-          console.log('返回的数据：', data);
-
-          const table = document.querySelector('table');
-          data.forEach(record => {
-            const row = table.insertRow(-1);
-            const filenameCell = row.insertCell(0);
-            const resultCell = row.insertCell(1);
-            // const timestampCell = row.insertCell(2);
-            const deleteCell = row.insertCell(2);
-            filenameCell.textContent = record.filename;  
-            resultCell.textContent = record.results;
-            // timestampCell.textContent = record.timestamp;
-            const deleteButton = document.createElement('button');
-            deleteButton.className = 'delete-button';
-            deleteButton.textContent = '删除';
-            deleteButton.addEventListener('click', () => {
-              if (confirm('确定要删除此日志吗？')) {
-                fetch(`/api/logs/${record.filename}`, { method: 'DELETE' })
-                  .then(response => response.json())
-                  .then(data => {
-                    table.deleteRow(row.rowIndex);
-                  })
-                  .catch(error => console.error(error));
-              }
-            });
-            deleteCell.appendChild(deleteButton);
-          });
-        })
-        .catch(error => console.error(error));
-    </script>
-  </body>
-</html>
+    </thead>
+    <tbody>
+      {% for log in logs %}
+      <tr>
+        <td>{{ log.filename }}</td>
+        <!-- <td>{{ log.timestamp }}</td> -->
+        <td>{{ log.results }}</td>
+        <td>
+          <button class="btn btn-danger" onclick="deleteLog('{{ log.filename }}')">删除</button>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <script>
+  function deleteLog(filename) {
+    if (confirm(`确定要删除日志 ${filename} 吗？`)) {
+      fetch(`/api/logs/${filename}`, {
+        method: 'DELETE'
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message);
+        location.reload();
+      })
+      .catch(error => {
+        console.error(error);
+        alert(`删除日志 ${filename} 失败`);
+      });
+    }
+  }
+  </script>
+  
