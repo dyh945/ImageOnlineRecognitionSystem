@@ -143,3 +143,5 @@ def delete_log(filename):
 
 if __name__ == '__main__':
     app.run(debug=True)
+    redis_client.close()
+    mysql_connection.close()

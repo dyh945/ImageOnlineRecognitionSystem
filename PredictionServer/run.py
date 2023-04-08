@@ -66,7 +66,3 @@ def analyze_file():
 
 if __name__ == "__main__":
     app.run(port=5002, debug=True)
-    # img = cv2.imread("PredictionServer/uploads/target.jpg")
-    # # 将图片转为 RGB 格式
-    # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    # print(img)
